@@ -33,7 +33,7 @@ export default class App extends React.Component {
                                 Learn Chakra
                             </Link>
                         </VStack>
-                        <IssueList issues={{ one: 'help' }}></IssueList>
+                        <IssueList issues={this.state.issueList}></IssueList>
                     </Grid>
                 </Box>
             </ChakraProvider>
@@ -41,8 +41,14 @@ export default class App extends React.Component {
     }
 }
 
-class IssueList extends React.Component<{ issues: any }> {
+class IssueList extends React.Component<{ issues: string[] }> {
     render() {
-        return <div>{this.props.issues.one}</div>;
+        return (
+            <div>
+                {this.props.issues.map((issue) => {
+                    return <span>{issue}</span>;
+                })}
+            </div>
+        );
     }
 }
