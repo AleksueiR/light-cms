@@ -1,12 +1,25 @@
 import { ColorModeScript } from '@chakra-ui/react';
-import * as React from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-ReactDOM.render(
-    <React.StrictMode>
-        <ColorModeScript />
-        <App />
-    </React.StrictMode>,
-    document.getElementById('root')
-);
+function render(Component: typeof App) {
+    ReactDOM.render(
+        <React.StrictMode>
+            <ColorModeScript />
+            <Router>
+                <Component />
+            </Router>
+        </React.StrictMode>,
+        document.getElementById('root')
+    );
+}
+
+render(App);
+
+if (module.hot) {
+    module.hot.accept('./App', () => {
+        render(require('./App').default);
+    });
+}

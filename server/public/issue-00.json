@@ -1,1 +1,16 @@
-{}
+{
+    "title": "Then, log in, if not already, with CLI. Use PowerShell as there is a bug that you can't create a service principle in Git Bash: <https://github.com/Azure/azure-cli/issues/16317>.\n\n```powershell\n# login into the Azure through the browser\n\naz login\n\n# get subscription id; make sure you get correct subscription under which the storage account was created\n\n$subscriptionId=(az account show --query id -o tsv)\n\n# create rbac (service principle) scoped to just the resource group containing the storage\n# the default expiry date is 1 year, you can set it higher here as well\n\naz ad sp create-for-rbac --name <service-principle-name> --role Contributor --years 5 --scopes \"/subscriptions/$subscriptionId/resourceGroups/<resource-group-name>\"\n\n# for example\n\naz ad sp create-for-rbac --name aleksueir-ramp4 --role Contributor --years 5 --scopes \"/subscriptions/$subscriptionId/resourceGroups/ramp-collective\"\n\n# or, for finer control, scope it to an individual resource\n\naz ad sp create-for-rbac --name <service-principle-name> --role Contributor --years 5 --scopes \"/subscriptions/$subscriptionId/resourceGroups/<resource-group-name>/providers/Microsoft.Storage/storageAccounts/<storage-account-name>\"\n\n# for example\n\naz ad sp create-for-rbac --name aleksueir-ramp4 --role Contributor --years 5 --scopes \"/subscriptions/$subscriptionId/resourceGroups/ramp-collective/providers/Microsoft.Storage/storageAccounts/ramp4demoblobstorage008\"\n```\n\nCLI will output something like this:\n\n```json\n{\n  \"appId\": \"5518044c-a0d5-4efb-b10f-daae2203f9ca\",\n  \"displayName\": \"aleksueir-ramp4\",\n  \"name\": \"http://aleksueir-ramp4\",\n  \"password\": \"CrEsN_^389_MZH7v_wvG.2yGTBhrf0ZwBt3x1QwiP~\",\n  \"tenant\": \"1ceffcab-07cb-07cb-4035-0dca61306353\"\n}\n```\n\nYou don't need the `displayName`; use `name` instead, and you also don't need the `appId`.\n\nAdd corresponding secrets to your Github account:\n\n```text\nAZ_LOGIN_NAME=http://aleksueir-ramp4\nAZ_PASSWORD=CrEsN_^389_MZH7v_wvG.2yGTBhrf0ZwBt3x1QwiP~\nAZ_STORAGE_ACCOUNT=<storage-account-name>\nAZ_TENANT=1ceffcab-07cb-07cb-4035-0dca61306353\n```\n\nIf you are creating individual sets of credentials for people, it’s useful to create a separate set for the main repo as well to deploy `master/develop` builds.",
+    "header-one": "blah",
+    "text-one": "Lorem cupidatat do occaecat voluptate fugiat pariatur aliqua consequat voluptate culpa. Voluptate ullamco cillum consequat labore excepteur laborum reprehenderit nulla magna. Adipisicing esse excepteur non et do minim consequat veniam minim et ea. Aliqua quis commodo culpa sint adipisicing laboris exercitation ipsum anim aute eu.\n",
+    "registered": "2015-04-28T12:15:26 +04:00",
+    "guid": "27aa91db-6f79-4694-a625-665673c76923",
+    "balance": "$1,693.62",
+    "picture": "http://placehold.it/32x32",
+    "eyeColor": "brown",
+    "name": "Darlene Ramsey",
+    "gender": "female",
+    "company": "INFOTRIPS",
+    "email": "darleneramsey@infotrips.com",
+    "phone": "+1 (859) 564-2004",
+    "address": "609 Fanchon Place, Maybell, Maine, 5205"
+}

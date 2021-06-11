@@ -58,7 +58,6 @@ You can learn more in the
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-
 https://reactjs.org/docs/add-react-to-a-website.html
 https://www.tutorialspoint.com/koajs/koajs_routing.htm
 https://reactrouter.com/web/example/custom-link
@@ -76,7 +75,6 @@ http://localhost:3000/issue-02/key-03
 https://medium.codylamson.com/minimum-viable-webpack-babel-react-setup-without-create-react-app-47959f43fbac
 https://reactjs.org/docs/conditional-rendering.html
 https://github.com/sparksuite/simplemde-markdown-editor
-https://stackoverflow.com/questions/53037659/react-router-dom-hot-reloading-using-create-react-app
 https://reactjs.org/docs/hooks-effect.html
 https://github.com/sparksuite/simplemde-markdown-editor/issues/621
 https://www.google.com/search?client=opera&q=react+run+hook+only+once&sourceid=opera&ie=UTF-8&oe=UTF-8
