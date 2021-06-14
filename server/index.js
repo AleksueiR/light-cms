@@ -13,7 +13,7 @@ const port = 9000;
 const app = new Koa();
 const client = new Koa();
 
-client.use(serveStatic(path.resolve(__dirname, '..', 'build')));
+client.use(serveStatic(path.resolve(process.cwd(), 'build')));
 app.use(mount('/', client));
 
 const router = new Router();
