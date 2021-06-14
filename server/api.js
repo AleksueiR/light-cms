@@ -1,8 +1,13 @@
 import path from 'path';
 import fs from 'fs-extra';
 import HttpStatus from 'http-status';
+import minimist from 'minimist';
 
-const STORE_PATH = path.resolve(__dirname, 'public');
+const argv = minimist(process.argv.slice(2));
+
+const STORE_PATH = path.resolve(process.cwd(), argv.store || 'store');
+
+console.log(argv, STORE_PATH);
 
 export async function listIssues(ctx, next) {
     const issueList = fs.readdirSync(STORE_PATH).map((file) => path.parse(file).name);

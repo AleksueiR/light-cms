@@ -2437,6 +2437,11 @@
   "resolved" "https://registry.npmjs.org/@types/minimatch/-/minimatch-3.0.4.tgz"
   "version" "3.0.4"
 
+"@types/minimist@^1.2.1":
+  "integrity" "sha512-fZQQafSREFyuZcdWFAExYjBiCL7AUCdgsk80iO0q4yihYYdcIiH28CcuPTGFgLOCC8RlW49GSQxdHwZP+I7CNg=="
+  "resolved" "https://registry.npmjs.org/@types/minimist/-/minimist-1.2.1.tgz"
+  "version" "1.2.1"
+
 "@types/node@*", "@types/node@^12.0.0":
   "integrity" "sha512-F6S4Chv4JicJmyrwlDkxUdGNSplsQdGwp1A0AJloEVDirWdZOAiRHhovDlsFkKUrquUXhz1imJhXHsf59auyAg=="
   "resolved" "https://registry.npmjs.org/@types/node/-/node-12.20.15.tgz"
