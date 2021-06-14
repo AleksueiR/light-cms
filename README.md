@@ -71,7 +71,6 @@ https://infinum.com/the-capsized-eight/how-to-use-react-hooks-in-class-component
 https://blog.logrocket.com/using-hooks-with-react-router/
 https://stackoverflow.com/questions/42463263/wrapping-a-react-router-link-in-an-html-button
 https://usehooks.com/useRouter/
-http://localhost:3000/issue-02/key-03
 https://medium.codylamson.com/minimum-viable-webpack-babel-react-setup-without-create-react-app-47959f43fbac
 https://reactjs.org/docs/conditional-rendering.html
 https://github.com/sparksuite/simplemde-markdown-editor

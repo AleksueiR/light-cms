@@ -3,16 +3,6 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@chakra-ui/react": "^1.0.0",
-        "@emotion/react": "^11.0.0",
-        "@emotion/styled": "^11.0.0",
-        "@types/node": "^12.0.0",
-        "@types/query-string": "^6.3.0",
-        "@types/react": "^16.9.0",
-        "@types/react-dom": "^16.9.0",
-        "@types/react-router-dom": "^5.1.7",
-        "@types/simplemde": "^1.11.7",
-        "@types/webpack-env": "^1.16.0",
         "axios": "^0.21.1",
         "esm": "^3.2.25",
         "framer-motion": "^4.0.0",
@@ -29,15 +19,15 @@
         "react-icons": "^3.0.0",
         "react-router-dom": "^5.2.0",
         "react-scripts": "4.0.3",
-        "simplemde": "^1.11.2",
-        "typescript": "^3.9.5"
+        "simplemde": "^1.11.2"
     },
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "cms": "nodemon -r esm -e .js,.html,.css ./server/index.js"
+        "cms": "nodemon -r esm -e .js,.html,.css ./server/index.js",
+        "start_": "npm run build && npm run cms"
     },
     "eslintConfig": {
         "extends": "react-app"
@@ -55,8 +45,19 @@
         ]
     },
     "devDependencies": {
+        "@chakra-ui/react": "^1.0.0",
+        "@emotion/react": "^11.0.0",
+        "@emotion/styled": "^11.0.0",
+        "@types/node": "^12.0.0",
+        "@types/query-string": "^6.3.0",
+        "@types/react": "^16.9.0",
+        "@types/react-dom": "^16.9.0",
+        "@types/react-router-dom": "^5.1.7",
+        "@types/simplemde": "^1.11.7",
+        "@types/webpack-env": "^1.16.0",
         "http-status": "^1.5.0",
         "koa-bodyparser": "^4.3.0",
-        "koa-mount": "^4.0.0"
+        "koa-mount": "^4.0.0",
+        "typescript": "^3.9.5"
     }
 }
