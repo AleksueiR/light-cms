@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import HttpStatus from 'http-status';
 import minimist from 'minimist';
+import recursive from 'recursive-readdir';
 
 const argv = minimist(process.argv.slice(2));
 
@@ -9,18 +10,41 @@ const STORE_PATH = path.resolve(process.cwd(), argv.store || 'store');
 
 console.log(argv, STORE_PATH);
 
-export async function listIssues(ctx, next) {
-    const issueList = fs.readdirSync(STORE_PATH).map((file) => path.parse(file).name);
+export async function listFiles(ctx, next) {
+    const files = await recursive(STORE_PATH);
+
+    const fileList = files.map((file) => {
+        const relative = path.relative(STORE_PATH, file);
+        const name = path.parse(file).name;
+        return {
+            name,
+            folder: relative.split(name)[0]
+        };
+    });
+
+    // console.log(fileList);
+    /* 
+    // console.log(files);
+
+    const issueList = fs.readdirSync(STORE_PATH).map((file) => {
+        // console.log(path.parse(file));
+
+        return path.parse(file).name;
+    }); */
 
     ctx.status = HttpStatus.OK;
-    ctx.body = issueList;
+    ctx.body = fileList;
     await next();
 }
 
 export async function listKeys(ctx, next) {
+    console.log('1', ctx.params, ctx.request.body);
+
     const { id } = ctx.params;
 
-    const issue = fs.readJsonSync(path.resolve(STORE_PATH, `${id}.json`), { encoding: 'utf8' });
+    console.log(id, `${id}.json`, path.normalize(id));
+
+    const issue = fs.readJsonSync(path.resolve(STORE_PATH, ...id.split('/'), '.json'), { encoding: 'utf8' });
     const keys = Object.keys(issue);
 
     ctx.status = HttpStatus.OK;

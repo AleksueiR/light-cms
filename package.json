@@ -3,15 +3,20 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@types/recursive-readdir": "^2.2.0",
         "axios": "^0.21.1",
         "esm": "^3.2.25",
         "framer-motion": "^4.0.0",
+        "http-status": "^1.5.0",
         "koa": "^2.13.1",
+        "koa-bodyparser": "^4.3.0",
         "koa-cors": "^0.0.16",
         "koa-logger": "^3.2.1",
+        "koa-mount": "^4.0.0",
         "koa-router": "^10.0.0",
         "koa-static": "^5.0.0",
         "koa-static-server": "^1.5.2",
+        "minimist": "^1.2.5",
         "nodemon": "^2.0.7",
         "query-string": "^7.0.0",
         "react": "^17.0.2",
@@ -19,20 +24,17 @@
         "react-icons": "^3.0.0",
         "react-router-dom": "^5.2.0",
         "react-scripts": "4.0.3",
+        "recursive-readdir": "^2.2.2",
         "simplemde": "^1.11.2",
-        "http-status": "^1.5.0",
-        "koa-bodyparser": "^4.3.0",
-        "koa-mount": "^4.0.0",
-        "minimist": "^1.2.5",
         "typescript": "^3.9.5"
     },
     "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject",
-        "cms": "nodemon -r esm -e .js,.html,.css ./server/index.js",
-        "start_": "npm run build && npm run cms"
+        "app-dev": "react-scripts start",
+        "app-build": "react-scripts build",
+        "app-test": "react-scripts test",
+        "app-eject": "react-scripts eject",
+        "server": "nodemon -r esm -e .js,.html,.css ./server/index.js",
+        "start": "npm run build && npm run cms"
     },
     "eslintConfig": {
         "extends": "react-app"

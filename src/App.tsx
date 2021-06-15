@@ -1,34 +1,26 @@
-import { Box, Link, Button, ChakraProvider, Grid, List, ListItem, Stack, theme } from '@chakra-ui/react';
-import queryString from 'query-string';
-import React, { FunctionComponent, useState, useMemo, useEffect } from 'react';
-import {
-    BrowserRouter as Router,
-    Route,
-    useHistory,
-    Link as RouterLink,
-    useLocation,
-    useParams,
-    matchPath,
-    useRouteMatch
-} from 'react-router-dom';
+import { Box, ChakraProvider, Grid, Link, List, ListItem, Stack, theme } from '@chakra-ui/react';
 import axios from 'axios';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Link as RouterLink, matchPath, Route, useLocation, useParams } from 'react-router-dom';
 import SimpleMDE from 'simplemde';
 import 'simplemde/dist/simplemde.min.css';
+import { ColorModeSwitcher } from './ColorModeSwitcher';
 
 const axs = axios.create({
     baseURL: 'http://localhost:9000/'
 });
 
+type FileEntry = { name: string; folder: string };
+
 export default class App extends React.Component {
     state = {
-        issueList: []
+        files: []
     };
 
     async componentDidMount() {
-        const response = await axs.get<string[]>('/api/issues');
+        const response = await axs.get<FileEntry[]>('/api/files');
 
-        this.setState({ issueList: response.data });
+        this.setState({ files: response.data });
     }
 
     render() {
@@ -39,14 +31,13 @@ export default class App extends React.Component {
                         <ColorModeSwitcher justifySelf="flex-end" />
 
                         <Stack direction="row" spacing={8}>
-                            <IssueList issues={this.state.issueList}></IssueList>
-                            <Route path="/:issue">
+                            <FileList files={this.state.files}></FileList>
+
+                            <Route path="/:file">
                                 <KeyList></KeyList>
                             </Route>
 
-                            {/* <Route path="/:issue/:key"> */}
                             <KeyDetails></KeyDetails>
-                            {/* </Route> */}
                         </Stack>
 
                         {/* <VStack spacing={8}>
@@ -71,27 +62,16 @@ export default class App extends React.Component {
     }
 }
 
-const IssueList: FunctionComponent<{ issues: string[] }> = ({ issues }) => {
-    /* const router = useRouter();
-
-    const match = useRouteMatch<params>('/:issue'); */
-
+const FileList: FunctionComponent<{ files: FileEntry[] }> = ({ files }) => {
     return (
         <div>
             <List>
-                {issues.map((issue) => {
+                {files.map(({ name, folder }) => {
                     return (
-                        <ListItem key={issue}>
-                            <Link h={'20'} display={'flex'} as={RouterLink} to={`/${issue}`}>
-                                {issue}
+                        <ListItem key={`${name}-${folder}`}>
+                            <Link h={'20'} display={'flex'} as={RouterLink} to={`/${folder}${name}`}>
+                                {name}-{folder}
                             </Link>
-
-                            {/* <Button onClick={() => router.push(`/${issue}`)} colorScheme="blue">
-                                {issue}
-                            </Button> */}
-                            {/* <LinkButton to={`/${issue}`} colorScheme="blue">
-                                {issue}
-                            </LinkButton> */}
                         </ListItem>
                     );
                 })}
@@ -100,30 +80,28 @@ const IssueList: FunctionComponent<{ issues: string[] }> = ({ issues }) => {
     );
 };
 
-type params = { issue: string; key: string };
+type params = { folder: string; file: string; key: string };
 
 function KeyList() {
-    const { issue } = useParams<params>();
+    const { file } = useParams<params>();
     const [keys, setKeys] = useState<string[]>([]);
 
     useEffect(() => {
         async function fetch() {
-            const response = await axs.get<string[]>(`/api/issues/${issue}`);
+            const response = await axs.get<string[]>(`/api/files/${file}`);
             setKeys(response.data);
         }
         fetch();
-    }, [issue]);
-
-    const router = useRouter();
+    }, [file]);
 
     return (
         <List>
             {keys.map((key) => {
                 return (
                     <ListItem key={key}>
-                        <Button onClick={() => router.push(`/${issue}/${key}`)} colorScheme="orange">
+                        <Link h={'20'} display={'flex'} as={RouterLink} to={`/${file}/${key}`} colorScheme="orange">
                             {key}
-                        </Button>
+                        </Link>
                     </ListItem>
                 );
             })}
@@ -134,8 +112,8 @@ function KeyList() {
 function KeyDetails() {
     const { pathname } = useLocation();
     const {
-        params: { issue, key }
-    } = matchPath<params>(pathname, { path: '/:issue/:key' }) || { params: { issue: null, key: null } };
+        params: { file, key }
+    } = matchPath<params>(pathname, { path: '/:file/:key' }) || { params: { file: null, file: null } };
 
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const mdeRef = React.useRef<SimpleMDE | null>(null);
@@ -153,21 +131,21 @@ function KeyDetails() {
             }
             console.log(mdeRef.current?.value());
 
-            if (!issue || !key) {
+            if (!file || !key) {
                 return;
             }
 
-            axs.put(`/api/issues/${issue}/${key}`, { payload: mdeRef.current?.value() });
+            axs.put(`/api/issues/${file}/${key}`, { payload: mdeRef.current?.value() });
 
             mdeRef.current.value(``);
         };
 
         async function fetch() {
-            if (!issue || !key) {
+            if (!file || !key) {
                 return;
             }
 
-            const response = await axs.get<string>(`/api/issues/${issue}/${key}`);
+            const response = await axs.get<string>(`/api/issues/${file}/${key}`);
 
             if (!mdeRef.current) {
                 return;
@@ -175,40 +153,11 @@ function KeyDetails() {
 
             mdeRef.current.value(response.data);
         }
-    }, [issue, key]);
+    }, [file, key]);
 
     return (
         <div>
             <textarea ref={textareaRef}></textarea>
         </div>
     );
-}
-
-export function useRouter() {
-    const params = useParams();
-    const location = useLocation();
-    const history = useHistory();
-    const match = useRouteMatch();
-    // Return our custom router object
-    // Memoize so that a new object is only returned if something changes
-    return useMemo(() => {
-        return {
-            // For convenience add push(), replace(), pathname at top level
-            push: history.push,
-            replace: history.replace,
-            pathname: location.pathname,
-            // Merge params and parsed query string into single "query" object
-            // so that they can be used interchangeably.
-            // Example: /:topic?sort=popular -> { topic: "react", sort: "popular" }
-            query: {
-                ...queryString.parse(location.search), // Convert string to object
-                ...params
-            },
-            // Include match, location, history objects so we have
-            // access to extra React Router functionality if needed.
-            match,
-            location,
-            history
-        };
-    }, [params, match, location, history]);
 }
