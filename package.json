@@ -34,7 +34,7 @@
         "app-test": "react-scripts test",
         "app-eject": "react-scripts eject",
         "server": "nodemon -r esm -e .js,.html,.css ./server/index.js",
-        "start": "npm run build && npm run cms"
+        "start": "npm run app-build && npm run server"
     },
     "eslintConfig": {
         "extends": "react-app"

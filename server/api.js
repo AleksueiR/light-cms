@@ -8,8 +8,6 @@ const argv = minimist(process.argv.slice(2));
 
 const STORE_PATH = path.resolve(process.cwd(), argv.store || 'store');
 
-console.log(argv, STORE_PATH);
-
 export async function listFiles(ctx, next) {
     const files = await recursive(STORE_PATH);
 
@@ -22,30 +20,16 @@ export async function listFiles(ctx, next) {
         };
     });
 
-    // console.log(fileList);
-    /* 
-    // console.log(files);
-
-    const issueList = fs.readdirSync(STORE_PATH).map((file) => {
-        // console.log(path.parse(file));
-
-        return path.parse(file).name;
-    }); */
-
     ctx.status = HttpStatus.OK;
     ctx.body = fileList;
     await next();
 }
 
 export async function listKeys(ctx, next) {
-    console.log('1', ctx.params, ctx.request.body);
-
     const { id } = ctx.params;
 
-    console.log(id, `${id}.json`, path.normalize(id));
-
-    const issue = fs.readJsonSync(path.resolve(STORE_PATH, ...id.split('/'), '.json'), { encoding: 'utf8' });
-    const keys = Object.keys(issue);
+    const file = readFile(id, ctx.query.folder);
+    const keys = Object.keys(file);
 
     ctx.status = HttpStatus.OK;
     ctx.body = keys;
@@ -55,27 +39,51 @@ export async function listKeys(ctx, next) {
 export async function fetchValue(ctx, next) {
     const { id, key } = ctx.params;
 
-    const issue = fs.readJsonSync(path.resolve(STORE_PATH, `${id}.json`), { encoding: 'utf8' });
+    const file = readFile(id, ctx.query.folder);
 
     ctx.status = HttpStatus.OK;
-    ctx.body = issue[key];
+    ctx.body = file[key];
     await next();
 }
 
 export async function updateValue(ctx, next) {
     const { id, key } = ctx.params;
+    const { payload, folder } = ctx.request.body;
 
-    const filePath = path.resolve(STORE_PATH, `${id}.json`);
-    const issue = fs.readJsonSync(filePath, { encoding: 'utf8' });
+    const file = readFile(id, folder);
 
-    const { payload } = ctx.request.body;
-    console.log(payload);
+    file[key] = payload;
 
-    issue[key] = payload;
-
-    fs.ensureFileSync(filePath);
-    fs.writeFileSync(filePath, JSON.stringify(issue, null, 4), 'utf-8');
+    writeFile(file, id, folder);
 
     ctx.status = HttpStatus.OK;
     await next();
+}
+
+/**
+ * Read file from the store.
+ *
+ * @param {*} name
+ * @param {string} [folder='']
+ * @returns
+ */
+function readFile(name, folder = '') {
+    const nName = path.normalize(`${folder}${name}`);
+
+    return fs.readJsonSync(path.resolve(STORE_PATH, `${nName}.json`), { encoding: 'utf8' });
+}
+
+/**
+ * Write file to the store.
+ *
+ * @param {*} data
+ * @param {*} name
+ * @param {string} [folder='']
+ */
+function writeFile(data, name, folder = '') {
+    const nName = path.normalize(`${folder}${name}`);
+    const filePath = path.resolve(STORE_PATH, `${nName}.json`);
+
+    fs.ensureFileSync(filePath);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 4), 'utf-8');
 }

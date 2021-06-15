@@ -1,6 +1,6 @@
 import { Box, ChakraProvider, Grid, Link, List, ListItem, Stack, theme } from '@chakra-ui/react';
 import axios from 'axios';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, matchPath, Route, useLocation, useParams } from 'react-router-dom';
 import SimpleMDE from 'simplemde';
 import 'simplemde/dist/simplemde.min.css';
@@ -11,66 +11,67 @@ const axs = axios.create({
 });
 
 type FileEntry = { name: string; folder: string };
+type Params = { file: string; key: string };
 
-export default class App extends React.Component {
-    state = {
-        files: []
-    };
+export default function App() {
+    const [files, setFiles] = useState<FileEntry[]>([]);
 
-    async componentDidMount() {
-        const response = await axs.get<FileEntry[]>('/api/files');
+    useEffect(() => {
+        async function fetch() {
+            const response = await axs.get<FileEntry[]>('/api/files');
 
-        this.setState({ files: response.data });
-    }
+            setFiles(response.data);
+        }
+        fetch();
+    }, []);
 
-    render() {
-        return (
-            <ChakraProvider theme={theme}>
-                <Box fontSize="xl">
-                    <Grid minH="100vh" p={3}>
-                        <ColorModeSwitcher justifySelf="flex-end" />
+    return (
+        <ChakraProvider theme={theme}>
+            <Box fontSize="xl">
+                <Grid minH="100vh" p={3}>
+                    <ColorModeSwitcher justifySelf="flex-end" />
 
-                        <Stack direction="row" spacing={8}>
-                            <FileList files={this.state.files}></FileList>
+                    <Stack direction="row" spacing={8}>
+                        <FileList files={files}></FileList>
 
-                            <Route path="/:file">
-                                <KeyList></KeyList>
-                            </Route>
+                        <Route path="/:file">
+                            <KeyList></KeyList>
+                        </Route>
 
-                            <KeyDetails></KeyDetails>
-                        </Stack>
+                        <KeyDetails></KeyDetails>
+                    </Stack>
 
-                        {/* <VStack spacing={8}>
-                            <Logo h="20vmin" pointerEvents="none" />
-                            <Text>
-                                Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
-                            </Text>
-                            <Link
-                                color="teal.500"
-                                href="https://chakra-ui.com"
-                                fontSize="2xl"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Learn Chakra
-                            </Link>
-                        </VStack> */}
-                    </Grid>
-                </Box>
-            </ChakraProvider>
-        );
-    }
+                    {/* <VStack spacing={8}>
+                        <Logo h="20vmin" pointerEvents="none" />
+                        <Text>
+                            Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
+                        </Text>
+                        <Link
+                            color="teal.500"
+                            href="https://chakra-ui.com"
+                            fontSize="2xl"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Learn Chakra
+                        </Link>
+                    </VStack> */}
+                </Grid>
+            </Box>
+        </ChakraProvider>
+    );
 }
 
-const FileList: FunctionComponent<{ files: FileEntry[] }> = ({ files }) => {
+function FileList({ files }: { files: FileEntry[] }) {
     return (
         <div>
             <List>
                 {files.map(({ name, folder }) => {
                     return (
-                        <ListItem key={`${name}-${folder}`}>
-                            <Link h={'20'} display={'flex'} as={RouterLink} to={`/${folder}${name}`}>
-                                {name}-{folder}
+                        <ListItem key={`${folder}-${name}`}>
+                            <Link h={'20'} display={'flex'} as={RouterLink} to={`/${name}?folder=${folder}`}>
+                                <span>{name}</span>
+                                <span>{folder}</span>
                             </Link>
                         </ListItem>
                     );
@@ -78,28 +79,34 @@ const FileList: FunctionComponent<{ files: FileEntry[] }> = ({ files }) => {
             </List>
         </div>
     );
-};
-
-type params = { folder: string; file: string; key: string };
+}
 
 function KeyList() {
-    const { file } = useParams<params>();
+    const { file } = useParams<Params>();
+    const folder = useQuery().get('folder');
+
     const [keys, setKeys] = useState<string[]>([]);
 
     useEffect(() => {
         async function fetch() {
-            const response = await axs.get<string[]>(`/api/files/${file}`);
+            const response = await axs.get<string[]>(`/api/files/${file}`, { params: { folder: folder } });
             setKeys(response.data);
         }
         fetch();
-    }, [file]);
+    }, [file, folder]);
 
     return (
         <List>
             {keys.map((key) => {
                 return (
                     <ListItem key={key}>
-                        <Link h={'20'} display={'flex'} as={RouterLink} to={`/${file}/${key}`} colorScheme="orange">
+                        <Link
+                            h={'20'}
+                            display={'flex'}
+                            as={RouterLink}
+                            to={`/${file}/${key}?folder=${folder}`}
+                            colorScheme="orange"
+                        >
                             {key}
                         </Link>
                     </ListItem>
@@ -111,9 +118,10 @@ function KeyList() {
 
 function KeyDetails() {
     const { pathname } = useLocation();
+    const folder = useQuery().get('folder') || '';
     const {
         params: { file, key }
-    } = matchPath<params>(pathname, { path: '/:file/:key' }) || { params: { file: null, file: null } };
+    } = matchPath<Params>(pathname, { path: '/:file/:key' }) || { params: { file: null, key: null } };
 
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const mdeRef = React.useRef<SimpleMDE | null>(null);
@@ -135,7 +143,7 @@ function KeyDetails() {
                 return;
             }
 
-            axs.put(`/api/issues/${file}/${key}`, { payload: mdeRef.current?.value() });
+            axs.put(`/api/files/${file}/${key}`, { payload: mdeRef.current?.value(), folder });
 
             mdeRef.current.value(``);
         };
@@ -145,7 +153,7 @@ function KeyDetails() {
                 return;
             }
 
-            const response = await axs.get<string>(`/api/issues/${file}/${key}`);
+            const response = await axs.get<string>(`/api/files/${file}/${key}`, { params: { folder } });
 
             if (!mdeRef.current) {
                 return;
@@ -153,11 +161,15 @@ function KeyDetails() {
 
             mdeRef.current.value(response.data);
         }
-    }, [file, key]);
+    }, [file, key, folder]);
 
     return (
         <div>
             <textarea ref={textareaRef}></textarea>
         </div>
     );
+}
+
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
 }

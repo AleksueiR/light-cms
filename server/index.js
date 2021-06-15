@@ -19,7 +19,7 @@ app.use(mount('/', client));
 const router = new Router();
 
 router.get('/api/files', api.listFiles);
-router.get('/api/files/:id+', api.listKeys);
+router.get('/api/files/:id', api.listKeys);
 router.get('/api/files/:id/:key', api.fetchValue);
 router.put('/api/files/:id/:key', api.updateValue);
 
