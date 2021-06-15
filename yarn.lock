@@ -3995,7 +3995,7 @@
   optionalDependencies:
     "fsevents" "^1.2.7"
 
-"chokidar@^3.2.2", "chokidar@^3.4.1":
+"chokidar@^3.2.2", "chokidar@^3.4.1", "chokidar@>=3.0.0 <4.0.0":
   "integrity" "sha512-9+s+Od+W0VJJzawDma/gvBNQqkTiqYTWLuZoyAsivsI4AaWTCzHG06/TMjsf1cYe9Cb97UCEhjz7HvnPk2p/tw=="
   "resolved" "https://registry.npmjs.org/chokidar/-/chokidar-3.5.1.tgz"
   "version" "3.5.1"
@@ -8105,14 +8105,6 @@
     "http-errors" "^1.7.3"
     "resolve-path" "^1.4.0"
 
-"koa-static-server@^1.5.2":
-  "integrity" "sha512-qIlok7DB85k9ST0cBBdzrYD9j3JwfGJx9D3znDRzdYUwlxix5+czgPlyXy5zW077WRrRzQy0ykx1U6cbaEOPtA=="
-  "resolved" "https://registry.npmjs.org/koa-static-server/-/koa-static-server-1.5.2.tgz"
-  "version" "1.5.2"
-  dependencies:
-    "koa-send" "^5.0.0"
-    "upath" "^1.0.2"
-
 "koa-static@^5.0.0":
   "integrity" "sha512-UqyYyH5YEXaJrf9S8E23GoJFQZXkBVJ9zYYMPGz919MSX1KuvAcycIuS0ci150HCoPf4XQVhQ84Qf8xRPWxFaQ=="
   "resolved" "https://registry.npmjs.org/koa-static/-/koa-static-5.0.0.tgz"
@@ -11204,6 +11196,13 @@
     "schema-utils" "^3.0.0"
     "semver" "^7.3.2"
 
+"sass@^1.35.0":
+  "integrity" "sha512-9joxNu7CoIEdZTDZFnH67NoWE/1VTofGPYiSIntWSE391SfmPu6Kd2Y0ZclDu9WQhVvvPwvo8LHeb/8wHIj95Q=="
+  "resolved" "https://registry.npmjs.org/sass/-/sass-1.35.0.tgz"
+  "version" "1.35.0"
+  dependencies:
+    "chokidar" ">=3.0.0 <4.0.0"
+
 "sax@~1.2.4":
   "integrity" "sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw=="
   "resolved" "https://registry.npmjs.org/sax/-/sax-1.2.4.tgz"
@@ -12564,7 +12563,7 @@
     "has-value" "^0.3.1"
     "isobject" "^3.0.0"
 
-"upath@^1.0.2", "upath@^1.1.1", "upath@^1.1.2", "upath@^1.2.0":
+"upath@^1.1.1", "upath@^1.1.2", "upath@^1.2.0":
   "integrity" "sha512-aZwGpamFO61g3OlfT7OQCHqhGnW43ieH9WZeP7QxN/G/jS4jfqUkZxoryvJgVPEcrl5NL/ggHsSmLMHuH64Lhg=="
   "resolved" "https://registry.npmjs.org/upath/-/upath-1.2.0.tgz"
   "version" "1.2.0"

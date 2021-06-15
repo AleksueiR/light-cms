@@ -2,9 +2,10 @@ import { Box, ChakraProvider, Grid, Link, List, ListItem, Stack, theme } from '@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, matchPath, Route, useLocation, useParams } from 'react-router-dom';
+import { ColorModeSwitcher } from './ColorModeSwitcher';
 import SimpleMDE from 'simplemde';
 import 'simplemde/dist/simplemde.min.css';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
+import './style.scss';
 
 const axs = axios.create({
     baseURL: 'http://localhost:9000/'
@@ -30,6 +31,8 @@ export default function App() {
             <Box fontSize="xl">
                 <Grid minH="100vh" p={3}>
                     <ColorModeSwitcher justifySelf="flex-end" />
+
+                    <h1>dfsdfs</h1>
 
                     <Stack direction="row" spacing={8}>
                         <FileList files={files}></FileList>
@@ -123,11 +126,16 @@ function KeyDetails() {
         params: { file, key }
     } = matchPath<Params>(pathname, { path: '/:file/:key' }) || { params: { file: null, key: null } };
 
+    const elementRef = React.useRef<HTMLDivElement>(null);
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const mdeRef = React.useRef<SimpleMDE | null>(null);
 
     useEffect(() => {
         mdeRef.current = new SimpleMDE({ element: textareaRef.current || undefined });
+
+        console.log(elementRef, elementRef.current?.querySelector('.editor-preview'));
+
+        //element.current?.getElementsByClassName('editor-preview')[0].classList.add('prose');
     }, []);
 
     useEffect(() => {
@@ -164,7 +172,7 @@ function KeyDetails() {
     }, [file, key, folder]);
 
     return (
-        <div>
+        <div ref={elementRef}>
             <textarea ref={textareaRef}></textarea>
         </div>
     );
