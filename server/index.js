@@ -1,9 +1,9 @@
 import Koa from 'koa';
-import Router from 'koa-router';
 import BodyParser from 'koa-bodyparser';
+import Cors from 'koa-cors';
 import Logger from 'koa-logger';
 import mount from 'koa-mount';
-import Cors from 'koa-cors';
+import Router from 'koa-router';
 import serveStatic from 'koa-static';
 import path from 'path';
 import * as api from './api.js';

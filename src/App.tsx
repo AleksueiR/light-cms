@@ -1,10 +1,22 @@
-import { Box, ChakraProvider, Grid, Link, List, ListItem, Stack, theme } from '@chakra-ui/react';
+import {
+    Box,
+    Text,
+    ChakraProvider,
+    Grid,
+    Link,
+    LinkBox,
+    LinkOverlay,
+    List,
+    ListItem,
+    Stack,
+    Textarea,
+    theme,
+    Heading
+} from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, matchPath, Route, useLocation, useParams } from 'react-router-dom';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
-import SimpleMDE from 'simplemde';
-import 'simplemde/dist/simplemde.min.css';
 import './style.scss';
 
 const axs = axios.create({
@@ -28,23 +40,23 @@ export default function App() {
 
     return (
         <ChakraProvider theme={theme}>
-            <Box fontSize="xl">
-                <Grid minH="100vh" p={3}>
-                    <ColorModeSwitcher justifySelf="flex-end" />
+            <Box fontSize="xl" p={3}>
+                {/* <Grid minH="100vh" p={3}> */}
+                <ColorModeSwitcher justifySelf="flex-end" />
 
-                    <h1>dfsdfs</h1>
+                <Heading>PLiNC - PLinc is Not a CMS</Heading>
 
-                    <Stack direction="row" spacing={8}>
-                        <FileList files={files}></FileList>
+                <Stack direction="row" spacing={8}>
+                    <FileList files={files}></FileList>
 
-                        <Route path="/:file">
-                            <KeyList></KeyList>
-                        </Route>
+                    <Route path="/:file">
+                        <KeyList></KeyList>
+                    </Route>
 
-                        <KeyDetails></KeyDetails>
-                    </Stack>
+                    <KeyDetails></KeyDetails>
+                </Stack>
 
-                    {/* <VStack spacing={8}>
+                {/* <VStack spacing={8}>
                         <Logo h="20vmin" pointerEvents="none" />
                         <Text>
                             Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
@@ -59,7 +71,7 @@ export default function App() {
                             Learn Chakra
                         </Link>
                     </VStack> */}
-                </Grid>
+                {/* </Grid> */}
             </Box>
         </ChakraProvider>
     );
@@ -71,11 +83,23 @@ function FileList({ files }: { files: FileEntry[] }) {
             <List>
                 {files.map(({ name, folder }) => {
                     return (
-                        <ListItem key={`${folder}-${name}`}>
-                            <Link h={'20'} display={'flex'} as={RouterLink} to={`/${name}?folder=${folder}`}>
-                                <span>{name}</span>
-                                <span>{folder}</span>
-                            </Link>
+                        <ListItem key={`${folder}-${name}`} mt="2">
+                            <LinkBox
+                                border={'1px'}
+                                p="6"
+                                _hover={{
+                                    background: 'white',
+                                    color: 'teal.500'
+                                }}
+                            >
+                                <Text fontSize="sm" color={'grey'}>
+                                    {folder}
+                                </Text>
+
+                                <LinkOverlay display={'flex'} as={RouterLink} to={`/${name}?folder=${folder}`}>
+                                    <Text>{name}</Text>
+                                </LinkOverlay>
+                            </LinkBox>
                         </ListItem>
                     );
                 })}
@@ -126,34 +150,25 @@ function KeyDetails() {
         params: { file, key }
     } = matchPath<Params>(pathname, { path: '/:file/:key' }) || { params: { file: null, key: null } };
 
-    const elementRef = React.useRef<HTMLDivElement>(null);
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-    const mdeRef = React.useRef<SimpleMDE | null>(null);
-
-    useEffect(() => {
-        mdeRef.current = new SimpleMDE({ element: textareaRef.current || undefined });
-
-        console.log(elementRef, elementRef.current?.querySelector('.editor-preview'));
-
-        //element.current?.getElementsByClassName('editor-preview')[0].classList.add('prose');
-    }, []);
 
     useEffect(() => {
         fetch();
 
-        return () => {
-            if (!mdeRef.current) {
-                return;
-            }
-            console.log(mdeRef.current?.value());
+        if (!textareaRef.current) {
+            return;
+        }
 
+        const textArea = textareaRef.current;
+
+        return () => {
             if (!file || !key) {
                 return;
             }
 
-            axs.put(`/api/files/${file}/${key}`, { payload: mdeRef.current?.value(), folder });
+            axs.put(`/api/files/${file}/${key}`, { payload: textArea.value, folder });
 
-            mdeRef.current.value(``);
+            textArea.value = '';
         };
 
         async function fetch() {
@@ -163,17 +178,13 @@ function KeyDetails() {
 
             const response = await axs.get<string>(`/api/files/${file}/${key}`, { params: { folder } });
 
-            if (!mdeRef.current) {
-                return;
-            }
-
-            mdeRef.current.value(response.data);
+            textArea.value = response.data;
         }
     }, [file, key, folder]);
 
     return (
-        <div ref={elementRef}>
-            <textarea ref={textareaRef}></textarea>
+        <div>
+            <Textarea w={500} h={300} ref={textareaRef} resize={'both'}></Textarea>
         </div>
     );
 }

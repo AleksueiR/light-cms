@@ -1,5 +1,6 @@
 {
-    "title": "# new title",
-    "joke": "Help",
-    "team": "Hoorya"
+    "foo.bar.gop": "# new title",
+    "joke-on-me": "Help",
+    "teamAwesome": "Hoorya",
+    "joke": ""
 }

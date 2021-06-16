@@ -11,14 +11,16 @@ const STORE_PATH = path.resolve(process.cwd(), argv.store || 'store');
 export async function listFiles(ctx, next) {
     const files = await recursive(STORE_PATH);
 
-    const fileList = files.map((file) => {
-        const relative = path.relative(STORE_PATH, file);
-        const name = path.parse(file).name;
-        return {
-            name,
-            folder: relative.split(name)[0]
-        };
-    });
+    const fileList = files
+        .sort((a, b) => a.length - b.length)
+        .map((file) => {
+            const relative = path.relative(STORE_PATH, file);
+            const name = path.parse(file).name;
+            return {
+                name,
+                folder: relative.split(name)[0]
+            };
+        });
 
     ctx.status = HttpStatus.OK;
     ctx.body = fileList;
