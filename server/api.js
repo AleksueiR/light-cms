@@ -3,6 +3,9 @@ import fs from 'fs-extra';
 import HttpStatus from 'http-status';
 import minimist from 'minimist';
 import recursive from 'recursive-readdir';
+import flat from 'flat';
+import dotprop from 'dotprop';
+import { dset } from 'dset';
 
 const argv = minimist(process.argv.slice(2));
 
@@ -31,7 +34,9 @@ export async function listKeys(ctx, next) {
     const { id } = ctx.params;
 
     const file = readFile(id, ctx.query.folder);
-    const keys = Object.keys(file);
+    const keys = Object.keys(flat(file)); // flatten object to get all the keys
+
+    console.log(flat(file));
 
     ctx.status = HttpStatus.OK;
     ctx.body = keys;
@@ -44,7 +49,7 @@ export async function fetchValue(ctx, next) {
     const file = readFile(id, ctx.query.folder);
 
     ctx.status = HttpStatus.OK;
-    ctx.body = file[key];
+    ctx.body = dotprop(file, key); // file[key];
     await next();
 }
 
@@ -54,7 +59,8 @@ export async function updateValue(ctx, next) {
 
     const file = readFile(id, folder);
 
-    file[key] = payload;
+    // file[key] = payload;
+    dset(file, key, payload);
 
     writeFile(file, id, folder);
 

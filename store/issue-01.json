@@ -2,5 +2,10 @@
     "foo.bar.gop": "# new title",
     "joke-on-me": "Help",
     "teamAwesome": "Hoorya",
-    "joke": ""
+    "joke": "",
+    "foo": {
+        "bar": {
+            "gop": "goop is good"
+        }
+    }
 }
