@@ -44,7 +44,7 @@ export default function App() {
                 {/* <Grid minH="100vh" p={3}> */}
                 <ColorModeSwitcher justifySelf="flex-end" />
 
-                <Heading mb={4}>PLinc - PLinc is Not a CMS</Heading>
+                <Heading mb={4}>PLinc - PLinc is not a CMS</Heading>
 
                 <Stack direction="row" spacing={8}>
                     <FileList files={files}></FileList>
