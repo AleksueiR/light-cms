@@ -44,7 +44,7 @@ export default function App() {
                 {/* <Grid minH="100vh" p={3}> */}
                 <ColorModeSwitcher justifySelf="flex-end" />
 
-                <Heading>PLiNC - PLinc is Not a CMS</Heading>
+                <Heading mb={4}>PLinc - PLinc is Not a CMS</Heading>
 
                 <Stack direction="row" spacing={8}>
                     <FileList files={files}></FileList>
@@ -86,7 +86,7 @@ function FileList({ files }: { files: FileEntry[] }) {
                         <ListItem key={`${folder}-${name}`} mt="2">
                             <LinkBox
                                 border={'1px'}
-                                p="6"
+                                p="2"
                                 _hover={{
                                     background: 'white',
                                     color: 'teal.500'
@@ -97,7 +97,7 @@ function FileList({ files }: { files: FileEntry[] }) {
                                 </Text>
 
                                 <LinkOverlay display={'flex'} as={RouterLink} to={`/${name}?folder=${folder}`}>
-                                    <Text>{name}</Text>
+                                    <Text fontSize="md">{name}</Text>
                                 </LinkOverlay>
                             </LinkBox>
                         </ListItem>
@@ -126,16 +126,19 @@ function KeyList() {
         <List>
             {keys.map((key) => {
                 return (
-                    <ListItem key={key}>
-                        <Link
-                            h={'20'}
-                            display={'flex'}
-                            as={RouterLink}
-                            to={`/${file}/${key}?folder=${folder}`}
-                            colorScheme="orange"
+                    <ListItem key={key} mt="2">
+                        <LinkBox
+                            border={'1px'}
+                            p="1"
+                            _hover={{
+                                background: 'white',
+                                color: 'teal.500'
+                            }}
                         >
-                            {key}
-                        </Link>
+                            <LinkOverlay display={'flex'} as={RouterLink} to={`/${file}/${key}?folder=${folder}`}>
+                                <Text fontSize="md">{key}</Text>
+                            </LinkOverlay>
+                        </LinkBox>
                     </ListItem>
                 );
             })}
