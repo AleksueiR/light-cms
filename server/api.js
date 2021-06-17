@@ -36,8 +36,6 @@ export async function listKeys(ctx, next) {
     const file = readFile(id, ctx.query.folder);
     const keys = Object.keys(flat(file)); // flatten object to get all the keys
 
-    console.log(flat(file));
-
     ctx.status = HttpStatus.OK;
     ctx.body = keys;
     await next();
@@ -49,7 +47,7 @@ export async function fetchValue(ctx, next) {
     const file = readFile(id, ctx.query.folder);
 
     ctx.status = HttpStatus.OK;
-    ctx.body = dotprop(file, key); // file[key];
+    ctx.body = dotprop(file, key);
     await next();
 }
 
@@ -59,7 +57,6 @@ export async function updateValue(ctx, next) {
 
     const file = readFile(id, folder);
 
-    // file[key] = payload;
     dset(file, key, payload);
 
     writeFile(file, id, folder);
