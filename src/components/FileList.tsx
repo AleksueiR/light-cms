@@ -13,8 +13,7 @@ export default function FileList({ files }: { files: FileEntry[] }) {
                             <LinkBox
                                 p="2"
                                 _hover={{
-                                    background: '#76D5FA',
-                                    backgroundopacity: 8%
+                                    background: '#76D5FA14'
                                 }}
                             >
                                 <Text as="span" fontSize="sm" color={'grey'}>
